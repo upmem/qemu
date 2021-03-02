@@ -1,0 +1,1 @@
+obj-y += cpu.o decode.o helper.o translate.o

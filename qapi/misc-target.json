@@ -266,3 +266,134 @@
 ##
 { 'command': 'query-gic-capabilities', 'returns': ['GICCapability'],
   'if': 'defined(TARGET_ARM)' }
+
+##
+# @DpuStartThreadResult:
+#
+# Result for a dpu_start_thread command. Gives the previous status of the DPU thread.
+#
+# @previous: whether the DPU thread was running
+##
+{ 'struct': 'DpuStartThreadResult',
+  'data': { 'previous': 'int' },
+  'if': 'defined(TARGET_DPU)' }
+
+##
+# @dpu_start_thread:
+#
+# This command is DPU-only. It will start the given thread on the specified DPU.
+##
+{ 'command': 'dpu_start_thread',
+  'returns': 'DpuStartThreadResult',
+  'data': { 'thread': 'int',
+            'resume': 'int' },
+  'if': 'defined(TARGET_DPU)' }
+
+##
+# @DpuPollResult:
+#
+# Result for a dpu_poll command. Gives the status of the DPU.
+#
+# @run: whether the DPU is running
+# @fault: whether the DPU is in fault
+##
+{ 'struct': 'DpuPollResult',
+  'data': { 'run': 'int', 'fault': 'int' },
+  'if': 'defined(TARGET_DPU)' }
+
+##
+# @dpu_poll:
+#
+# This command is DPU-only. It will poll the status of the given thread on the specified DPU.
+##
+{ 'command': 'dpu_poll',
+  'returns': 'DpuPollResult',
+  'if': 'defined(TARGET_DPU)' }
+
+##
+# @dpu_trigger_fault:
+#
+# This command is DPU-only. It will put the DPU in the fault state, stopping all threads.
+##
+{ 'command': 'dpu_trigger_fault',
+  'if': 'defined(TARGET_DPU)' }
+
+##
+# @DpuFaultInfo:
+#
+# Result for a dpu_fault_info command.
+#
+# @bkp: the DPU thread in a BKP fault (invalid thread if no BKP fault has been triggered)
+# @dma: the DPU thread in a DMA fault (invalid thread if no DMA fault has been triggered)
+# @mem: the DPU thread in a MEM fault (invalid thread if no MEM fault has been triggered)
+##
+{ 'struct': 'DpuFaultInfo',
+  'data': { 'bkp': 'int',
+            'dma': 'int',
+            'mem': 'int' },
+  'if': 'defined(TARGET_DPU)' }
+
+##
+# @dpu_fault_info:
+#
+# This command is DPU-only. It will fetch the DPU fault information, then clear it.
+##
+{ 'command': 'dpu_fault_info',
+  'returns': 'DpuFaultInfo',
+  'if': 'defined(TARGET_DPU)' }
+
+##
+# @DpuStepThreadResult:
+#
+# Result for a dpu_step_thread command.
+#
+# @started: the DPU thread which has been booted during the step (an invalid thread if no thread was booted).
+##
+{ 'struct': 'DpuStepThreadResult',
+  'data': { 'started': 'int' },
+  'if': 'defined(TARGET_DPU)' }
+
+##
+# @dpu_step_thread:
+#
+# This command is DPU-only. It will execute one instruction for the given thread on the specified DPU.
+##
+{ 'command': 'dpu_step_thread',
+  'returns': 'DpuStepThreadResult',
+  'data': { 'thread': 'int' },
+  'if': 'defined(TARGET_DPU)' }
+
+##
+# @dpu_set_state:
+#
+# This command is DPU-only. It will change the internal state of the specified DPU.
+##
+{ 'command': 'dpu_set_state',
+  'data': { 'element': 'str',
+            'thread': 'int',
+            'idx': 'int',
+            'value': 'int' },
+  'if': 'defined(TARGET_DPU)' }
+
+##
+# @DpuStateValue:
+#
+# Result for a dpu_get_state command.
+#
+# @value: the value of the specified DPU state element
+##
+{ 'struct': 'DpuStateValue',
+  'data': { 'value': 'int' },
+  'if': 'defined(TARGET_DPU)' }
+
+##
+# @dpu_get_state:
+#
+# This command is DPU-only. It will return the internal state of the specified DPU.
+##
+{ 'command': 'dpu_get_state',
+  'returns': 'DpuStateValue',
+  'data': { 'element': 'str',
+            'thread': 'int',
+            'idx': 'int' },
+  'if': 'defined(TARGET_DPU)' }
